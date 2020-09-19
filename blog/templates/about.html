@@ -1,15 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    {% if title_name %}
-        <title>{{ title_name }}</title>
-    {% else %}
-        <title>Title</title>
-    {% endif %}
-</head>
-<body>
-<h1>This is the about page</h1>
-
-</body>
-</html>
+{% extends 'layout.html' %}
+{% block content %}
+<h1>This is about page</h1>
+{% endblock content %}
