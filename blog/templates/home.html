@@ -1,5 +1,15 @@
 {% extends 'layout.html' %}
 {% block content %}
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-success">
+            {{ messages }}
+        </div>
+        {% endfor %}
+    {% endif%}
+{% endwith %}
+
 {% for post in posts %}
 <article class="media content-section">
     <div class="media-body">

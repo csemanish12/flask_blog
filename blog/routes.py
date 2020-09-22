@@ -1,7 +1,8 @@
-from blog import app
-from flask import render_template
+from blog import app, db
+from flask import render_template, redirect, flash
 
 from blog.forms import RegistrationForm
+from blog.models import User
 
 
 @app.route("/")
@@ -31,4 +32,10 @@ def about():
 @app.route("/registration", methods=["GET", "POST"])
 def register():
     form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data, password=form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash(f'your account has been created! you can now log in', 'success')
+        return redirect("/")
     return render_template('register.html', form=form)
