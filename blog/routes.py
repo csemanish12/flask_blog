@@ -1,7 +1,7 @@
 from blog import app, db
 from flask import render_template, redirect, flash
 
-from blog.forms import RegistrationForm
+from blog.forms import RegistrationForm, LoginForm
 from blog.models import User
 
 
@@ -39,3 +39,9 @@ def register():
         flash(f'your account has been created! you can now log in', 'success')
         return redirect("/")
     return render_template('register.html', form=form)
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    form = LoginForm()
+    return render_template('login.html', form=form)
