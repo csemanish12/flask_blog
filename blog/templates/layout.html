@@ -39,6 +39,15 @@
     </nav>
 </header>
 
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-success">
+            {{ messages }}
+        </div>
+        {% endfor %}
+    {% endif%}
+{% endwith %}
 {% block content %}
 {% endblock content %}
 
