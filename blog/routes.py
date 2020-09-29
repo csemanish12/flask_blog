@@ -1,6 +1,6 @@
 from blog import app, db
 from flask import render_template, redirect, flash, session
-from flask_login import login_user, current_user
+from flask_login import login_user, current_user, logout_user
 
 from blog.forms import RegistrationForm, LoginForm
 from blog.models import User
@@ -59,3 +59,8 @@ def login():
             flash(f'Incorrect email/password', 'danger')
     return render_template('login.html', form=form)
 
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect("/")
