@@ -1,6 +1,6 @@
 from blog import app, db
 from flask import render_template, redirect, flash, session
-from flask_login import login_user, current_user, logout_user
+from flask_login import login_user, current_user, logout_user, login_required
 
 from blog.forms import RegistrationForm, LoginForm
 from blog.models import User
@@ -64,3 +64,9 @@ def login():
 def logout():
     logout_user()
     return redirect("/")
+
+
+@app.route("/profile")
+@login_required
+def profile():
+    return render_template('profile.html', title_name='profile')
