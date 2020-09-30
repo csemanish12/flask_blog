@@ -1,5 +1,5 @@
 from blog import app, db
-from flask import render_template, redirect, flash, session
+from flask import render_template, redirect, flash, session, get_flashed_messages
 from flask_login import login_user, current_user, logout_user, login_required
 
 from blog.forms import RegistrationForm, LoginForm
