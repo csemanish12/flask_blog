@@ -1,11 +1,9 @@
-import os
 from blog import app, db
 from flask import render_template, redirect, flash, session, get_flashed_messages
 from flask_login import login_user, current_user, logout_user, login_required
-from PIL import Image
-import secrets
 from blog.forms import RegistrationForm, LoginForm, ProfileUpdateForm
 from blog.models import User
+from blog.utils import save_image
 
 
 @app.route("/")
@@ -76,20 +74,7 @@ def profile():
         current_user.username = form.username.data
         current_user.email = form.email.data
         if form.picture.data:
-            # extract filename and extension from image uploaded by user
-            filename, file_extension = os.path.splitext(form.picture.data.filename)
-
-            # create new name for the image uploaded by user, as the multiple user can upload the image with same name
-            new_file_name = current_user.username + file_extension
-
-            # generate path for the saving the image
-            file_path = os.path.join(app.root_path, 'static/profile_pictures', new_file_name)
-
-            # save the image in that locoation
-            form.picture.data.save(file_path)
-
-            # save the name of file in our database
-            current_user.image_file = new_file_name
+            current_user.image_file = save_image(form.picture.data)
         db.session.commit()
         flash('Your profile was updated', 'success')
         return redirect("/profile")
