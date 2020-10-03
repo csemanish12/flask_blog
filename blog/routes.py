@@ -1,8 +1,10 @@
+import os
 from blog import app, db
 from flask import render_template, redirect, flash, session, get_flashed_messages
 from flask_login import login_user, current_user, logout_user, login_required
-
-from blog.forms import RegistrationForm, LoginForm
+from PIL import Image
+import secrets
+from blog.forms import RegistrationForm, LoginForm, ProfileUpdateForm
 from blog.models import User
 
 
@@ -69,4 +71,5 @@ def logout():
 @app.route("/profile")
 @login_required
 def profile():
-    return render_template('profile.html', title_name='profile')
+    form = ProfileUpdateForm()
+    return render_template('profile.html', title_name='profile', form=form)
