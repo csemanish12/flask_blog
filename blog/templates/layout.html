@@ -6,7 +6,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="static/main.css" type="text/css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}" type="text/css">
     {% if title_name %}
     <title>{{ title_name }}</title>
     {% else %}
@@ -30,6 +30,7 @@
                 <!-- Navbar Right Side -->
                 <div class="navbar-nav">
                     {% if current_user.is_authenticated %}
+                    <a class="nav-item nav-link" href="/post/new">New Post</a>
                     <a class="nav-item nav-link" href="/profile">Profile</a>
                     <a class="nav-item nav-link" href="/logout">logout</a>
                     {% else %}

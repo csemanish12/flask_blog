@@ -1,8 +1,8 @@
 from blog import app, db
 from flask import render_template, redirect, flash, session, get_flashed_messages
 from flask_login import login_user, current_user, logout_user, login_required
-from blog.forms import RegistrationForm, LoginForm, ProfileUpdateForm
-from blog.models import User
+from blog.forms import RegistrationForm, LoginForm, ProfileUpdateForm, PostForm
+from blog.models import User, Post
 from blog.utils import save_image
 
 
@@ -81,3 +81,16 @@ def profile():
     form.username.data = current_user.username
     form.email.data = current_user.email
     return render_template('profile.html', title_name='profile', form=form)
+
+
+@app.route("/post/new", methods=["GET", "POST"])
+@login_required
+def new_post():
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(title=form.title.data, content=form.content.data, user_id=current_user.id)
+        db.session.add(post)
+        db.session.commit()
+        flash('You post has been created', 'success')
+        return redirect("/")
+    return render_template('create_post.html', title_name='New Post', form=form)
