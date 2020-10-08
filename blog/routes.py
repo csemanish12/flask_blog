@@ -8,20 +8,7 @@ from blog.utils import save_image
 
 @app.route("/")
 def home():
-    posts = [
-    {
-        'author': 'User first',
-        'title': 'blog post one',
-        'content': 'These are the contents for the first post',
-        'date_posted': '2020-09-19'
-    },
-    {
-        'author': 'User Second',
-        'title': 'blog post two',
-        'content': 'second post content',
-        'date_posted': '2020-09-20'
-    }
-]
+    posts = Post.query.order_by(Post.date_posted.desc()).all()
     return render_template('home.html', posts=posts)
 
 
