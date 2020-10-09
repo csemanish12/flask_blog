@@ -81,3 +81,10 @@ def new_post():
         flash('You post has been created', 'success')
         return redirect("/")
     return render_template('create_post.html', title_name='New Post', form=form)
+
+
+@app.route("/post/<int:post_id>")
+@login_required
+def post(post_id):
+    post = Post.query.get_or_404(post_id)
+    return render_template('post.html', post=post)
