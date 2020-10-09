@@ -1,5 +1,5 @@
 from blog import app, db
-from flask import render_template, redirect, flash, session, get_flashed_messages
+from flask import render_template, redirect, flash, abort, url_for
 from flask_login import login_user, current_user, logout_user, login_required
 from blog.forms import RegistrationForm, LoginForm, ProfileUpdateForm, PostForm
 from blog.models import User, Post
@@ -80,7 +80,7 @@ def new_post():
         db.session.commit()
         flash('You post has been created', 'success')
         return redirect("/")
-    return render_template('create_post.html', title_name='New Post', form=form)
+    return render_template('create_post.html', title_name='New Post', form=form, legend="New Post")
 
 
 @app.route("/post/<int:post_id>")
@@ -88,3 +88,21 @@ def new_post():
 def post(post_id):
     post = Post.query.get_or_404(post_id)
     return render_template('post.html', post=post)
+
+
+@app.route("/post/<int:post_id>/update", methods=["GET", "POST"])
+@login_required
+def update_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    if post.author != current_user:
+        abort(403)
+    form = PostForm()
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.content = form.content.data
+        db.session.commit()
+        flash("Your post was updated", "success")
+        return redirect(url_for('post', post_id=post.id))
+    form.title.data = post.title
+    form.content.data = post.content
+    return render_template('create_post.html', title_name="Update Post", form=form, legend="Update Post")
