@@ -1,5 +1,5 @@
 from blog import app, db
-from flask import render_template, redirect, flash, abort, url_for
+from flask import render_template, redirect, flash, abort, url_for, request
 from flask_login import login_user, current_user, logout_user, login_required
 from blog.forms import RegistrationForm, LoginForm, ProfileUpdateForm, PostForm
 from blog.models import User, Post
@@ -8,7 +8,8 @@ from blog.utils import save_image
 
 @app.route("/")
 def home():
-    posts = Post.query.order_by(Post.date_posted.desc()).all()
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.order_by(Post.date_posted.desc()).paginate(per_page=2, page=page)
     return render_template('home.html', posts=posts)
 
 

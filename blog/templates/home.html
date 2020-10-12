@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 {% block content %}
-{% for post in posts %}
+{% for post in posts.items %}
 <article class="media content-section">
     <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pictures/' + post.author.image_file) }}">
     <div class="media-body">
@@ -13,5 +13,19 @@
     </div>
 </article>
 {% endfor %}
+{% if posts.has_next and posts.has_prev %}
+    <a class="btn btn-outline-info mb-4" href="{{ url_for('home', page=posts.page - 1) }}">Previous</a>
+    <a class="btn btn-info mb-4" href="{{ url_for('home', page=posts.page ) }}">{{ posts.page }}</a>
+    <a class="btn btn-outline-info mb-4" href="{{ url_for('home', page=posts.page + 1) }}">Next</a>
+
+{% elif posts.has_next %}
+    <a class="btn btn-info mb-4 ml-4" href="{{ url_for('home', page=posts.page ) }}">{{ posts.page }}</a>
+    <a class="btn btn-outline-info mb-4" href="{{ url_for('home', page=posts.page + 1) }}">Next</a>
+{% elif posts.has_prev %}
+    <a class="btn btn-outline-info mb-4" href="{{ url_for('home', page=posts.page -1 ) }}">Previous</a>
+    <a class="btn btn-info mb-4" href="{{ url_for('home', page=posts.page ) }}">{{ posts.page}}</a>
+{% else %}
+    <a class="btn btn-info mb-4" href="{{ url_for('home', page=posts.page - 1) }}">{{posts.page}}</a>
+{% endif %}
 {% endblock content %}
 
