@@ -1,5 +1,5 @@
 from blog import app, db
-from flask import render_template, redirect, flash, abort, url_for, request
+from flask import render_template, redirect, flash, abort, url_for, request, session
 from flask_login import login_user, current_user, logout_user, login_required
 from blog.forms import RegistrationForm, LoginForm, ProfileUpdateForm, PostForm
 from blog.models import User, Post
@@ -9,7 +9,7 @@ from blog.utils import save_image
 @app.route("/")
 def home():
     page = request.args.get('page', 1, type=int)
-    posts = Post.query.order_by(Post.date_posted.desc()).paginate(per_page=2, page=page)
+    posts = Post.query.order_by(Post.date_posted.desc()).paginate(per_page=3, page=page)
     return render_template('home.html', posts=posts)
 
 
@@ -119,3 +119,17 @@ def delete_post(post_id):
     db.session.commit()
     flash("Your post was deleted", "success")
     return redirect(url_for('home'))
+
+
+@app.route("/search", methods=["GET", "POST"])
+def search():
+    page = request.args.get('page', 1, type=int)
+
+    if request.method == 'POST':
+        search_word = request.form['search']
+        session['search'] = search_word
+    if 'search' in session:
+        posts = Post.query.filter(Post.title.ilike(F'%{session["search"]}%')).paginate(per_page=3, page=page)
+    else:
+        posts = Post.query.order_by(Post.date_posted.desc()).paginate(per_page=3, page=page)
+    return render_template('search_page.html', posts=posts, title_name="Search", search_word=session.get('search'))
