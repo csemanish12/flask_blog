@@ -1,0 +1,5 @@
+NAme 1
+Nmae 2
+
+define method_name():
+    pass

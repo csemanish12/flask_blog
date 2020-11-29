@@ -1,15 +1,30 @@
 from blog import app, db
-from flask import render_template, redirect, flash, abort, url_for, request, session
+from flask import render_template, redirect, flash, abort, url_for, request, session, jsonify
 from flask_login import login_user, current_user, logout_user, login_required
 from blog.forms import RegistrationForm, LoginForm, ProfileUpdateForm, PostForm
 from blog.models import User, Post
 from blog.utils import save_image
 
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def home():
     page = request.args.get('page', 1, type=int)
-    posts = Post.query.order_by(Post.date_posted.desc()).paginate(per_page=3, page=page)
+    per_page = request.args.get('per_page', 100)
+    posts = Post.query.order_by(Post.date_posted.desc()).paginate(per_page=per_page, page=page)
+    data = posts.items
+    new_data = []
+    for each_data in data:
+        a = {
+            'title': each_data.title,
+            'date_posted': each_data.date_posted,
+            'content': each_data.content
+        }
+        new_data.append(a)
+        pass
+    return {'data': new_data}
+    return jsonify(new_data)
+    return new_data
+
     return render_template('home.html', posts=posts)
 
 
@@ -72,16 +87,31 @@ def profile():
 
 
 @app.route("/post/new", methods=["GET", "POST"])
-@login_required
+#@login_required
 def new_post():
-    form = PostForm()
-    if form.validate_on_submit():
-        post = Post(title=form.title.data, content=form.content.data, user_id=current_user.id)
-        db.session.add(post)
-        db.session.commit()
-        flash('You post has been created', 'success')
-        return redirect("/")
-    return render_template('create_post.html', title_name='New Post', form=form, legend="New Post")
+    # form = PostForm()
+    # if form.validate_on_submit():
+    #     post = Post(title=form.title.data, content=form.content.data, user_id=current_user.id)
+    #     db.session.add(post)
+    #     db.session.commit()
+    #     flash('You post has been created', 'success')
+    #     return redirect("/")
+    # return render_template('create_post.html', title_name='New Post', form=form, legend="New Post")
+
+    data = request.json
+    print(type(data))
+    # validate data
+    # validate title validation_title()
+    # validate content validate_content()
+    post = Post(title=data['title'], content=data.get('content'), user_id=1)
+    db.session.add(post)
+    db.session.commit()
+    return {
+        'title': post.title,
+        'content': post.content,
+        'date_posted': post.date_posted
+    }
+
 
 
 @app.route("/post/<int:post_id>")
